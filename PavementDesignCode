@@ -1,0 +1,108 @@
+
+<html lang="en">
+<head>
+<meta charset="UTF-8"></meta>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"></meta>
+<title>Pavement Design Visualizer</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+    }
+    #pavementDisplay {
+        width: 80%; /* Adjust width for better display */
+        height: 300px;
+        margin-top: 20px;
+        border: 1px solid #ccc;
+        position: relative;
+        background: rgba(200, 200, 200, 0.3); /* Light background for better layer contrast */
+    }
+    .layer {
+        position: absolute;
+        left: 0;
+        right: 50%; /* Adjust for label space */
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        color: black;
+        padding-right: 10px;
+    }
+    .bituminous { background: lightgrey; }
+    .macadam { background: darkgrey; }
+    .waterBound { background: lightblue; }
+    .subBase { background: sandybrown; }
+    .subgrade { background: lightgreen; }
+    .layer-label {
+        position: absolute;
+        right: 0;
+        width: 50%; /* Ensure label visibility */
+        padding-left: 10px;
+        display: flex;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.8);
+    }
+    .dimensions {
+        position: absolute;
+        width: 100%;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.9);
+        text-align: center;
+        font-size: 16px;
+    }
+</style>
+</head>
+<body>
+<h2>Pavement Design Visualizer</h2>
+<select id="designMethod" onchange="updateDisplay()">
+    <option value="">Select Design Method</option>
+    <option value="cbr">CBR Method</option>
+    <option value="crv">California Resistance Value Method</option>
+    <option value="triaxial">Triaxial Test Method</option>
+    <option value="burmister">Burmister Method</option>
+    <option value="irc">IRC Method</option>
+</select>
+
+<div id="pavementDisplay"></div>
+
+<script>
+function updateDisplay() {
+    const method = document.getElementById('designMethod').value;
+    const display = document.getElementById('pavementDisplay');
+    display.innerHTML = ''; // Clear previous content
+
+    if (!method) return; // No method selected, do nothing
+
+    // Example structure of layers with labels
+    const layers = [
+        { class: 'subgrade', height: '50px', label: 'Subgrade: 500 mm Selected Soil CBR ≥ 5%' },
+        { class: 'subBase', height: '40px', label: 'Granular Sub-base: 200 mm CRM' },
+        { class: 'waterBound', height: '40px', label: 'Water-bound Macadam: 100 mm DLC' },
+        { class: 'macadam', height: '30px', label: 'Dense Bituminous Macadam: 300 mm PQC M-40' },
+        { class: 'bituminous', height: '40px', label: 'Bituminous Concrete: 300 mm' }
+    ];
+
+    let top = 0;
+    layers.forEach(layer => {
+        const layerDiv = document.createElement('div');
+        layerDiv.className = 'layer ' + layer.class;
+        layerDiv.style.top = top + 'px';
+        layerDiv.style.height = layer.height;
+
+        const label = document.createElement('div');
+        label.className = 'layer-label';
+        label.textContent = layer.label;
+        layerDiv.appendChild(label);
+
+        display.appendChild(layerDiv);
+        top += parseInt(layer.height);
+    });
+
+    // Adding road dimensions label at the bottom
+    const dimensions = document.createElement('div');
+    dimensions.className = 'dimensions';
+    dimensions.textContent = 'Total width: 36.00 meters, Carriageway: 7.50 meters each, Median: 3.00 meters';
+    display.appendChild(dimensions);
+}
+</script>
+</body>
+</html>
